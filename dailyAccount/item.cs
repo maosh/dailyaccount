@@ -64,6 +64,14 @@ namespace dailyAccount
         private string wdresult2;
         private int ? nowmoney;
 
+
+        private int? balance;
+        private int ? block;
+        private int? status;
+        private string comment;
+
+
+
         public int Id
         {
             get
@@ -701,5 +709,86 @@ namespace dailyAccount
                 nowmoney = value;
             }
         }
+
+
+
+
+        public int? Balance
+        {
+            get
+            {
+                return balance;
+            }
+
+            set
+            {
+                balance = value;
+            }
+        }
+
+
+
+        public int? Block
+        {
+            get
+            {
+                return block;
+            }
+
+            set
+            {
+                block = value;
+            }
+        }
+
+
+
+        public int? Status
+        {
+            get
+            {
+                return status;
+            }
+
+            set
+            {
+                status = value;
+            }
+        }
+
+        public string Comment
+        {
+            get
+            {
+                return comment;
+            }
+
+            set
+            {
+                comment = value;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

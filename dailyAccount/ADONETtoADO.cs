@@ -54,6 +54,7 @@ namespace dailyAccount
                 case "System.Byte": return DataTypeEnum.adUnsignedTinyInt;
                 case "System.Char": return DataTypeEnum.adChar;
                 case "System.DateTime": return DataTypeEnum.adDate;
+                case "System.Date": return DataTypeEnum.adDate;
                 case "System.Decimal": return DataTypeEnum.adDecimal;
                 case "System.Double": return DataTypeEnum.adDouble;
                 case "System.Int16": return DataTypeEnum.adSmallInt;

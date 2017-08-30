@@ -33,6 +33,17 @@
             this.refresh_BTN = new System.Windows.Forms.Button();
             this.dataitemView_ = new System.Windows.Forms.DataGridView();
             this.bottomLayout_ = new System.Windows.Forms.Panel();
+            this.reportBTN_ = new System.Windows.Forms.Button();
+            this.queryAllBTN_ = new System.Windows.Forms.Button();
+            this.endDate_ = new System.Windows.Forms.DateTimePicker();
+            this.startDate_ = new System.Windows.Forms.DateTimePicker();
+            this.clearTz_ = new System.Windows.Forms.Button();
+            this.unlock_ = new System.Windows.Forms.Button();
+            this.lock_ = new System.Windows.Forms.Button();
+            this.locklog_ = new System.Windows.Forms.RichTextBox();
+            this.delete_ = new System.Windows.Forms.Button();
+            this.eName_ = new System.Windows.Forms.ComboBox();
+            this.setResult_ = new System.Windows.Forms.Button();
             this.result_ = new System.Windows.Forms.ComboBox();
             this.tzIndex_ = new System.Windows.Forms.ComboBox();
             this.reeze_ = new System.Windows.Forms.Button();
@@ -43,7 +54,6 @@
             this.query_BTN = new System.Windows.Forms.Button();
             this.dateTimePicker_ = new System.Windows.Forms.DateTimePicker();
             this.ss_ = new AxMicrosoft.Office.Interop.Owc11.AxSpreadsheet();
-            this.setResult_ = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataitemView_)).BeginInit();
             this.bottomLayout_.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ss_)).BeginInit();
@@ -53,7 +63,7 @@
             // 
             this.button1.Location = new System.Drawing.Point(3, 19);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(144, 28);
+            this.button1.Size = new System.Drawing.Size(93, 28);
             this.button1.TabIndex = 0;
             this.button1.Text = "提交";
             this.button1.UseVisualStyleBackColor = true;
@@ -61,9 +71,9 @@
             // 
             // refresh_BTN
             // 
-            this.refresh_BTN.Location = new System.Drawing.Point(184, 22);
+            this.refresh_BTN.Location = new System.Drawing.Point(111, 19);
             this.refresh_BTN.Name = "refresh_BTN";
-            this.refresh_BTN.Size = new System.Drawing.Size(101, 25);
+            this.refresh_BTN.Size = new System.Drawing.Size(93, 28);
             this.refresh_BTN.TabIndex = 2;
             this.refresh_BTN.Text = "刷新";
             this.refresh_BTN.UseVisualStyleBackColor = true;
@@ -80,6 +90,16 @@
             // 
             // bottomLayout_
             // 
+            this.bottomLayout_.Controls.Add(this.reportBTN_);
+            this.bottomLayout_.Controls.Add(this.queryAllBTN_);
+            this.bottomLayout_.Controls.Add(this.endDate_);
+            this.bottomLayout_.Controls.Add(this.startDate_);
+            this.bottomLayout_.Controls.Add(this.clearTz_);
+            this.bottomLayout_.Controls.Add(this.unlock_);
+            this.bottomLayout_.Controls.Add(this.lock_);
+            this.bottomLayout_.Controls.Add(this.locklog_);
+            this.bottomLayout_.Controls.Add(this.delete_);
+            this.bottomLayout_.Controls.Add(this.eName_);
             this.bottomLayout_.Controls.Add(this.setResult_);
             this.bottomLayout_.Controls.Add(this.result_);
             this.bottomLayout_.Controls.Add(this.tzIndex_);
@@ -97,11 +117,111 @@
             this.bottomLayout_.Size = new System.Drawing.Size(1727, 165);
             this.bottomLayout_.TabIndex = 4;
             // 
+            // reportBTN_
+            // 
+            this.reportBTN_.Location = new System.Drawing.Point(1578, 55);
+            this.reportBTN_.Name = "reportBTN_";
+            this.reportBTN_.Size = new System.Drawing.Size(75, 23);
+            this.reportBTN_.TabIndex = 20;
+            this.reportBTN_.Text = "财务";
+            this.reportBTN_.UseVisualStyleBackColor = true;
+            // 
+            // queryAllBTN_
+            // 
+            this.queryAllBTN_.Location = new System.Drawing.Point(1488, 54);
+            this.queryAllBTN_.Name = "queryAllBTN_";
+            this.queryAllBTN_.Size = new System.Drawing.Size(75, 23);
+            this.queryAllBTN_.TabIndex = 19;
+            this.queryAllBTN_.Text = "查询";
+            this.queryAllBTN_.UseVisualStyleBackColor = true;
+            this.queryAllBTN_.Click += new System.EventHandler(this.queryAllBTN__Click);
+            // 
+            // endDate_
+            // 
+            this.endDate_.Location = new System.Drawing.Point(1366, 56);
+            this.endDate_.Name = "endDate_";
+            this.endDate_.Size = new System.Drawing.Size(116, 21);
+            this.endDate_.TabIndex = 18;
+            // 
+            // startDate_
+            // 
+            this.startDate_.Location = new System.Drawing.Point(1256, 57);
+            this.startDate_.Name = "startDate_";
+            this.startDate_.Size = new System.Drawing.Size(104, 21);
+            this.startDate_.TabIndex = 17;
+            // 
+            // clearTz_
+            // 
+            this.clearTz_.Location = new System.Drawing.Point(759, 76);
+            this.clearTz_.Name = "clearTz_";
+            this.clearTz_.Size = new System.Drawing.Size(75, 23);
+            this.clearTz_.TabIndex = 16;
+            this.clearTz_.Text = "清除投注";
+            this.clearTz_.UseVisualStyleBackColor = true;
+            this.clearTz_.Click += new System.EventHandler(this.clearTz__Click);
+            // 
+            // unlock_
+            // 
+            this.unlock_.Location = new System.Drawing.Point(672, 122);
+            this.unlock_.Name = "unlock_";
+            this.unlock_.Size = new System.Drawing.Size(65, 23);
+            this.unlock_.TabIndex = 15;
+            this.unlock_.Text = "解锁";
+            this.unlock_.UseVisualStyleBackColor = true;
+            this.unlock_.Click += new System.EventHandler(this.unlock__Click);
+            // 
+            // lock_
+            // 
+            this.lock_.Location = new System.Drawing.Point(579, 122);
+            this.lock_.Name = "lock_";
+            this.lock_.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lock_.Size = new System.Drawing.Size(65, 23);
+            this.lock_.TabIndex = 14;
+            this.lock_.Text = "锁定";
+            this.lock_.UseVisualStyleBackColor = true;
+            this.lock_.Click += new System.EventHandler(this.lock__Click);
+            // 
+            // locklog_
+            // 
+            this.locklog_.Location = new System.Drawing.Point(356, 57);
+            this.locklog_.Name = "locklog_";
+            this.locklog_.Size = new System.Drawing.Size(109, 96);
+            this.locklog_.TabIndex = 13;
+            this.locklog_.Text = "";
+            // 
+            // delete_
+            // 
+            this.delete_.Location = new System.Drawing.Point(1392, 19);
+            this.delete_.Name = "delete_";
+            this.delete_.Size = new System.Drawing.Size(75, 23);
+            this.delete_.TabIndex = 12;
+            this.delete_.Text = "删除";
+            this.delete_.UseVisualStyleBackColor = true;
+            this.delete_.Click += new System.EventHandler(this.delete__Click);
+            // 
+            // eName_
+            // 
+            this.eName_.FormattingEnabled = true;
+            this.eName_.Location = new System.Drawing.Point(1255, 19);
+            this.eName_.Name = "eName_";
+            this.eName_.Size = new System.Drawing.Size(121, 20);
+            this.eName_.TabIndex = 11;
+            // 
+            // setResult_
+            // 
+            this.setResult_.Location = new System.Drawing.Point(662, 76);
+            this.setResult_.Name = "setResult_";
+            this.setResult_.Size = new System.Drawing.Size(87, 23);
+            this.setResult_.TabIndex = 10;
+            this.setResult_.Text = "设置比赛结果";
+            this.setResult_.UseVisualStyleBackColor = true;
+            this.setResult_.Click += new System.EventHandler(this.setResult__Click);
+            // 
             // result_
             // 
             this.result_.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.result_.FormattingEnabled = true;
-            this.result_.Location = new System.Drawing.Point(579, 112);
+            this.result_.Location = new System.Drawing.Point(579, 76);
             this.result_.Name = "result_";
             this.result_.Size = new System.Drawing.Size(65, 20);
             this.result_.TabIndex = 9;
@@ -110,14 +230,14 @@
             // 
             this.tzIndex_.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tzIndex_.FormattingEnabled = true;
-            this.tzIndex_.Location = new System.Drawing.Point(504, 112);
+            this.tzIndex_.Location = new System.Drawing.Point(504, 76);
             this.tzIndex_.Name = "tzIndex_";
             this.tzIndex_.Size = new System.Drawing.Size(65, 20);
             this.tzIndex_.TabIndex = 9;
             // 
             // reeze_
             // 
-            this.reeze_.Location = new System.Drawing.Point(21, 76);
+            this.reeze_.Location = new System.Drawing.Point(3, 75);
             this.reeze_.Name = "reeze_";
             this.reeze_.Size = new System.Drawing.Size(75, 23);
             this.reeze_.TabIndex = 8;
@@ -127,7 +247,7 @@
             // 
             // reset
             // 
-            this.reset.Location = new System.Drawing.Point(759, 55);
+            this.reset.Location = new System.Drawing.Point(850, 26);
             this.reset.Name = "reset";
             this.reset.Size = new System.Drawing.Size(75, 23);
             this.reset.TabIndex = 7;
@@ -137,9 +257,9 @@
             // 
             // tj_BTN
             // 
-            this.tj_BTN.Location = new System.Drawing.Point(318, 23);
+            this.tj_BTN.Location = new System.Drawing.Point(228, 19);
             this.tj_BTN.Name = "tj_BTN";
-            this.tj_BTN.Size = new System.Drawing.Size(75, 23);
+            this.tj_BTN.Size = new System.Drawing.Size(93, 28);
             this.tj_BTN.TabIndex = 6;
             this.tj_BTN.Text = "统计";
             this.tj_BTN.UseVisualStyleBackColor = true;
@@ -147,7 +267,7 @@
             // 
             // log_
             // 
-            this.log_.Location = new System.Drawing.Point(870, 3);
+            this.log_.Location = new System.Drawing.Point(941, 3);
             this.log_.Name = "log_";
             this.log_.Size = new System.Drawing.Size(308, 164);
             this.log_.TabIndex = 5;
@@ -155,7 +275,7 @@
             // 
             // archive_BTN
             // 
-            this.archive_BTN.Location = new System.Drawing.Point(759, 25);
+            this.archive_BTN.Location = new System.Drawing.Point(759, 26);
             this.archive_BTN.Name = "archive_BTN";
             this.archive_BTN.Size = new System.Drawing.Size(75, 23);
             this.archive_BTN.TabIndex = 4;
@@ -182,23 +302,13 @@
             // 
             // ss_
             // 
-       //     this.ss_.DataSource = null;
+         
             this.ss_.Enabled = true;
             this.ss_.Location = new System.Drawing.Point(1, 1);
             this.ss_.Name = "ss_";
             this.ss_.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("ss_.OcxState")));
             this.ss_.Size = new System.Drawing.Size(1551, 794);
             this.ss_.TabIndex = 5;
-            // 
-            // setResult_
-            // 
-            this.setResult_.Location = new System.Drawing.Point(662, 112);
-            this.setResult_.Name = "setResult_";
-            this.setResult_.Size = new System.Drawing.Size(75, 23);
-            this.setResult_.TabIndex = 10;
-            this.setResult_.Text = "设置比赛结果";
-            this.setResult_.UseVisualStyleBackColor = true;
-            this.setResult_.Click += new System.EventHandler(this.setResult__Click);
             // 
             // Form1
             // 
@@ -237,6 +347,16 @@
         private System.Windows.Forms.ComboBox result_;
         private System.Windows.Forms.ComboBox tzIndex_;
         private System.Windows.Forms.Button setResult_;
+        private System.Windows.Forms.Button delete_;
+        private System.Windows.Forms.ComboBox eName_;
+        private System.Windows.Forms.RichTextBox locklog_;
+        private System.Windows.Forms.Button unlock_;
+        private System.Windows.Forms.Button lock_;
+        private System.Windows.Forms.Button clearTz_;
+        private System.Windows.Forms.Button reportBTN_;
+        private System.Windows.Forms.Button queryAllBTN_;
+        private System.Windows.Forms.DateTimePicker endDate_;
+        private System.Windows.Forms.DateTimePicker startDate_;
     }
 }
 

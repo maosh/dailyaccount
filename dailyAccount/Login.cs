@@ -15,6 +15,8 @@ namespace dailyAccount
     {
         private Form1 MainFrame_ = null;
         private Request req_ = null;
+
+        private string version = "1.0.2";
         public Login(Form1 mainFrame)
         {
             MainFrame_ = mainFrame;
@@ -40,6 +42,16 @@ namespace dailyAccount
             }
 
                 DataTable dt = null;
+            if (req_.version(version, out dt))
+            {
+
+            }else
+            {
+
+                MessageBox.Show("请使用最新版！");
+                return;
+            }
+             dt = null;
             if (req_.Login(acc, pwd,out dt))
             {
                 // 保存账号密码
@@ -112,6 +124,12 @@ namespace dailyAccount
             var pwd = System.Configuration.ConfigurationManager.AppSettings["Password"];
             acc_.Text = acc;
             pwd_.Text = pwd;
+        }
+
+        private Boolean version_vailde()
+        {
+
+            return true;
         }
     }
 }
