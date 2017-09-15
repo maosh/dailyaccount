@@ -67,8 +67,12 @@ namespace dailyAccount
 
         private int? balance;
         private int ? block;
-        private int? status;
+        private string blockstatus;
+        private int? recall;
+        private string recallstatus;
         private string comment;
+
+        private string date;
 
 
 
@@ -740,19 +744,43 @@ namespace dailyAccount
                 block = value;
             }
         }
-
-
-
-        public int? Status
+        public string Blockstatus
         {
             get
             {
-                return status;
+                return blockstatus;
             }
 
             set
             {
-                status = value;
+                blockstatus = value;
+            }
+        }
+
+
+        public int? Recall
+        {
+            get
+            {
+                return recall;
+            }
+
+            set
+            {
+                recall = value;
+            }
+        }
+
+        public string Recallstatus
+        {
+            get
+            {
+                return recallstatus;
+            }
+
+            set
+            {
+                recallstatus = value;
             }
         }
 
@@ -768,6 +796,22 @@ namespace dailyAccount
                 comment = value;
             }
         }
+
+
+
+        public string Date
+        {
+            get
+            {
+                return date;
+            }
+
+            set
+            {
+                date = value;
+            }
+        }
+
 
 
 

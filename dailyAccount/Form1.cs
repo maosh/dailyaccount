@@ -15,7 +15,7 @@ namespace dailyAccount
 {
     public partial class Form1 : Form
     {
-        private string header = "序号	网站套次	网名	账号	资料人	负责人	IP地	网站总额	可打额度	充值	反水	第一次投注	赔率	赢亏	第二次投注	赔率	赢亏	第三次投注	赔率	赢亏	第四次投注	赔率	赢亏	第五次	赔率	赢亏	第六次	赔率	赢亏	第七次	赔率	赢亏	第八次	赔率	赢亏	第九次	赔率	赢亏	第十次	赔率	赢亏	第十一次	赔率	赢亏	一次提款	是否到	二次提款	是否到	剩余金额	盈亏	被扣	状态	备注";
+        private string header = "序号	网站套次	网名	账号	资料人	负责人	IP地	网站总额	可打额度	充值	反水	第一次投注	赔率	赢亏	第二次投注	赔率	赢亏	第三次投注	赔率	赢亏	第四次投注	赔率	赢亏	第五次	赔率	赢亏	第六次	赔率	赢亏	第七次	赔率	赢亏	第八次	赔率	赢亏	第九次	赔率	赢亏	第十次	赔率	赢亏	第十一次	赔率	赢亏	一次提款	是否到	二次提款	是否到	剩余金额	盈亏	被扣	被扣确认	追回	追回确认	备注	日期";
         private string header_tj = "姓名	第1套	可打	第2套	可打	其他	三升	沙巴	365	总额";
         private Boolean isArchived = false;
 
@@ -33,6 +33,11 @@ namespace dailyAccount
         private int archiveTimes;
 
         public int[]tzStatus = new int[11];
+
+        private ArrayList historyDate = new ArrayList();
+
+        //0: 当天数据； 1：历史数据
+        public int commitblock = 0;
         public Form1()
         {
             InitializeComponent();
@@ -41,6 +46,11 @@ namespace dailyAccount
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (!checkCommitBlock())
+            {
+                MessageBox.Show("历史纪录查询中，禁止提交，请先刷新");
+                return;
+            }
             Range cells = ss_.Cells;
 
                 LogUtl.info("解析表格。。。");
@@ -51,7 +61,7 @@ namespace dailyAccount
                 string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
                 req_ = new Request(connStr);
 
-                int nTotalRow = 0;
+             
                 int number = 0;
 
                 //      req_.clear( SiteOwner);
@@ -70,7 +80,7 @@ namespace dailyAccount
                 }
                 foreach (DataRow dr in dt.Rows)
                 {
-                    item item_, item_db;
+                    item item_;
                     item_ = dr2ar(dr);
                     //   number = req_.add(item_);
                 //    number = req_.add(item_, getitem(item_.User,item_.Id));
@@ -99,8 +109,8 @@ namespace dailyAccount
                 {
                     req_.serverSetStatus("", 1);
                 }
-
-                setdeposite();
+                // todo:: 待功能完善
+                setRebate(SiteOwner);
 
             }
             catch (Exception ex)
@@ -155,8 +165,8 @@ namespace dailyAccount
             setnowmoney();
 
 
-            int i = 1;
-            string temp = null;
+    
+         
             ((Microsoft.Office.Interop.Owc11.Worksheet)this.ss_.Worksheets["Sheet1"]).Range["A1:zz65536"].CopyFromRecordset(ADONETtoADO.ConvertDataTableToRecordset(dt), 1000,100);
             //   (ss_.Cells[2, 1] as Range).CopyFromRecordset(ADONETtoADO.ConvertDataTableToRecordset(dt));
             (ss_.Cells[1, 1] as Range).ParseText(header, "\t");
@@ -213,9 +223,12 @@ namespace dailyAccount
                 lock_.Visible = false;
                 unlock_.Visible = false;
                 clearTz_.Visible = false;
+                updateHistoryBTN_.Visible = false;
+                materialOwner_.Visible = false;
 
 
-                
+
+
             }
             getArchiveFlag();
             getUserProfile();
@@ -295,7 +308,7 @@ namespace dailyAccount
             withdraw2, wdresult2,
             nowmoney,
 
-            balance, block, status, comment,
+            balance, block, blockstatus, recall, recallstatus, comment, date,
             end
         }
 
@@ -571,12 +584,22 @@ namespace dailyAccount
             else { item_.Balance = Convert.ToInt32(dr[BetHead.balance.ToString()]); }
             if (dr[BetHead.block.ToString()] as string == "" || dr[BetHead.block.ToString()] == DBNull.Value) { item_.Block = null; }
             else { item_.Block = Convert.ToInt32(dr[BetHead.block.ToString()]); }
-            if (dr[BetHead.status.ToString()] as string == "" || dr[BetHead.status.ToString()] == DBNull.Value) { item_.Status = null; }
-            else { item_.Status = Convert.ToInt32(dr[BetHead.status.ToString()]); }
+            if (dr[BetHead.blockstatus.ToString()] as string == "" || dr[BetHead.blockstatus.ToString()] == DBNull.Value) { item_.Blockstatus = null; }
+            else { item_.Blockstatus = dr[BetHead.blockstatus.ToString()] as string; }
+
+            if (dr[BetHead.recall.ToString()] as string == "" || dr[BetHead.recall.ToString()] == DBNull.Value) { item_.Recall = null; }
+            else { item_.Recall = Convert.ToInt32(dr[BetHead.recall.ToString()]); }
+            if (dr[BetHead.recallstatus.ToString()] as string == "" || dr[BetHead.recallstatus.ToString()] == DBNull.Value) { item_.Recallstatus = null; }
+            else { item_.Recallstatus = dr[BetHead.recallstatus.ToString()] as string; }
+
+
             if (dr[BetHead.comment.ToString()] as string == "" || dr[BetHead.comment.ToString()] == DBNull.Value) { item_.Comment = null; }
             else { item_.Comment = dr[BetHead.comment.ToString()] as string; }
 
 
+            //新添加 日期转换
+            if (dr[BetHead.date.ToString()] as string == "" || dr[BetHead.date.ToString()] == DBNull.Value) { item_.Date = null; }
+            else { item_.Date = dr[BetHead.date.ToString()] as string; }
 
             return item_;
 
@@ -601,7 +624,9 @@ namespace dailyAccount
         {
             DoUIJob(new Action(() =>
             {
+                resetCommitBlock();
                 setContent();
+
                
 
                 if (userClass == 1)
@@ -693,7 +718,9 @@ namespace dailyAccount
 
             tabStr += dr[BetHead.balance.ToString()] + ",";
             tabStr += dr[BetHead.block.ToString()] + ",";
-            tabStr += dr[BetHead.status.ToString()] + ",";
+            tabStr += dr[BetHead.blockstatus.ToString()] + ",";
+            tabStr += dr[BetHead.recall.ToString()] + ",";
+            tabStr += dr[BetHead.recallstatus.ToString()] + ",";
             tabStr += dr[BetHead.comment.ToString()] ;
 
 
@@ -737,12 +764,14 @@ namespace dailyAccount
 
         private void query_BTN_Click(object sender, EventArgs e)
         {
+            setCommitBlock();
+            historyDate.Clear();
             string dateStr = dateTimePicker_.Value.ToShortDateString();
             string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
             req_ = new Request(connStr);
-            DataTable dt = req_.getHistoryData(SiteOwner, userClass, dateStr, "",users, "");
+            DataTable dt = req_.getHistoryData(SiteOwner, userClass, dateStr, "",users, "","");
             SetHeader();
-            int i = 1;
+
 
             ((Microsoft.Office.Interop.Owc11.Worksheet)this.ss_.Worksheets["Sheet1"]).Range["A1:zz65536"].CopyFromRecordset(ADONETtoADO.ConvertDataTableToRecordset(dt));
     
@@ -757,7 +786,11 @@ namespace dailyAccount
 
         private void archive_BTN_Click(object sender, EventArgs e)
         {
-
+            if(commitblock != 0)
+            {
+                MessageBox.Show("历史数据查询中，禁止提交");
+                return;
+            }
             getArchiveFlag();
             string dateStr = dateTimePicker_.Value.ToShortDateString();
             if (archiveTimes == 0)
@@ -809,8 +842,6 @@ namespace dailyAccount
             {
                 string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
                 req_ = new Request(connStr);
-
-                int nTotalRow = 0;
 
 
                 foreach (DataRow dr in dt.Rows)
@@ -878,19 +909,33 @@ namespace dailyAccount
    
             sql.Append("sum(init) as total_total ");
             //    sql.Append("from(select user, websitetype, sum(initmoney + ifnull(deposit, 0)) as init, ifnull(sum(avaimoney),0) as avail from dailyaccount GROUP BY  user, websitetype) as A GROUP BY user  order by field (`user` ,'杨东杰', '高国强', '杨飞', '郭科峰', '吴娜' , '聂俊勇', '张洪佳', '张孝猛', '申玉龙', '段龙辉', '王利强', '黄意','杨晓丹', '张朝生', '毛帅'); ");
-            
+
+            string temp = "";
+
+            foreach (user us in users)
+            {
+                temp += ",'";
+                temp += us.Username;
+                temp += "'";
+            }
+
+
             if (userClass == 0)
             {
-                sql.Append("from(select user, websitetype, sum(nowmoney) as init, ifnull(sum(avaimoney),0) as avail from dailyaccount GROUP BY  user, websitetype) as A GROUP BY user  order by field (`user` ,'杨东杰', '高国强', '杨飞', '郭科峰', '吴娜' , '聂俊勇', '张洪佳', '张孝猛', '申玉龙', '段龙辉', '王利强', '黄意','杨晓丹', '张朝生', '毛帅'); ");
+                sql.Append("from(select user, websitetype, sum(nowmoney) as init, ifnull(sum(avaimoney),0) as avail from dailyaccount GROUP BY  user, websitetype) as A GROUP BY user  order by field (`user` ");
+                //,'杨东杰', '高国强', '杨飞', '郭科峰', '吴娜' , '聂俊勇', '张洪佳', '张孝猛', '申玉龙', '段龙辉', '王利强', '黄意','杨晓丹', '张朝生', '毛帅'); ");
             }
             else
             {
 
                 sql.Append("from(select user, websitetype, sum(nowmoney) as init, ifnull(sum(avaimoney),0) as avail from dailyaccount  where user = '");
                     sql.Append(SiteOwner);
-                    sql.Append("' GROUP BY  user, websitetype) as A GROUP BY user  order by field (`user` ,'杨东杰', '高国强', '杨飞', '郭科峰', '吴娜' , '聂俊勇', '张洪佳', '张孝猛', '申玉龙', '段龙辉', '王利强', '黄意','杨晓丹', '张朝生', '毛帅'); ");
+                sql.Append("' GROUP BY  user, websitetype) as A GROUP BY user  order by field (`user`");
+                        // ,'杨东杰', '高国强', '杨飞', '郭科峰', '吴娜' , '聂俊勇', '张洪佳', '张孝猛', '申玉龙', '段龙辉', '王利强', '黄意','杨晓丹', '张朝生', '毛帅'); ");
 
             }
+            sql.Append(temp);
+            sql.Append(") ;");
             DataTable dt = req_.select(sql.ToString());
             SetHeader_tj();
             int i = 1;
@@ -985,8 +1030,6 @@ namespace dailyAccount
                 string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
                 req_ = new Request(connStr);
 
-                int nTotalRow = 0;
-
 
                 req_.update("update tztitle set title = '' ");
                 foreach (DataRow dr in dt.Rows)
@@ -996,7 +1039,7 @@ namespace dailyAccount
                     req_.clear();
                     isArchived = false;
                 }
-
+                getArchiveFlag();
                 setArchiveFlag(archiveDate, 0);
 
             }
@@ -1025,7 +1068,7 @@ namespace dailyAccount
 
         private void reeze__Click(object sender, EventArgs e)
         {
-            ss_.Cells.Range["H2"].Activate();
+            ss_.Cells.Range["H3"].Activate();
 
         //    ss_.ActiveSheet.Range("A1").EntireRow.Insert;
 
@@ -1042,8 +1085,103 @@ namespace dailyAccount
 
         private void setResult__Click(object sender, EventArgs e)
         {
+            //            int tzi = -1; int result = -1;
+            //           tzi =  tzIndex_.SelectedIndex;
+            //            result = result_.SelectedIndex;
+            //            string[,] temp = new string[11, 3]{
+            //                { "tzmoney1", "odds1", "result1" },
+            //{ "tzmoney2", "odds2", "result2" },
+            //{ "tzmoney3", "odds3", "result3" },
+            //{ "tzmoney4", "odds4", "result4" },
+            //{ "tzmoney5", "odds5", "result5" },
+            //{ "tzmoney6", "odds6", "result6" },
+            //{ "tzmoney7", "odds7", "result7" },
+            //{ "tzmoney8", "odds8", "result8" },
+            //{ "tzmoney9", "odds9", "result9" },
+            //{ "tzmoney10", "odds10", "result10" },
+            //{ "tzmoney11", "odds11", "result11" } };
+
+            //            double[] temp_wight = new double[] { 1, 0.5, 0, -0.5, -1 };
+
+
+            //            if(tzi == -1 || result == -1)
+            //            {
+            //                MessageBox.Show("请选择场次或者结果");
+            //                return;
+            //            }
+
+            //            string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+            //            req_ = new Request(connStr);
+            //            double wight = temp_wight[result];
+
+
+            //            StringBuilder sql = new StringBuilder("update dailyaccount set   ");
+            //            sql.Append(temp[tzi,2]).Append("=").Append(temp[tzi,0]).Append("*").Append(wight);
+            //            if(result <= 2)
+            //            {
+            //                sql.Append("*").Append(temp[tzi, 1]);
+            //            };
+
+            //            req_.update(sql.ToString());
+
+            //            setbalance();
+            //            setnowmoney();
+            string tableName="";
+            string dateStr = "";
+            if (commitblock == 0)
+            {
+                tableName = "dailyaccount";
+                dateStr = "";
+                setResult(tableName, "");
+
+            }
+            else if (commitblock == 1)
+            {
+                tableName = "dailyaccount_history";
+
+                Range cells = ss_.Cells;
+                DataTable dt = toDT(cells);
+                try
+                {
+
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        item item_;
+                        item_ = dr2ar(dr);
+                        string dateTemp = dateEngtoChn(item_.Date);
+                        if (!historyDate.Contains(dateTemp))
+                        {
+                            historyDate.Add(dateTemp);
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                if (historyDate.Count > 1)
+                {
+                    MessageBox.Show("该历史页面包含多个日期，不能设置比赛结果");
+                    return;
+                }
+                else
+                {
+                    dateStr = historyDate[0] as string;
+                }
+
+                setResult(tableName, dateStr);
+
+            }
+        
+
+
+        }
+        private void setResult(string tableName, string date)
+        {
             int tzi = -1; int result = -1;
-           tzi =  tzIndex_.SelectedIndex;
+            tzi = tzIndex_.SelectedIndex;
             result = result_.SelectedIndex;
             string[,] temp = new string[11, 3]{
                 { "tzmoney1", "odds1", "result1" },
@@ -1061,7 +1199,7 @@ namespace dailyAccount
             double[] temp_wight = new double[] { 1, 0.5, 0, -0.5, -1 };
 
 
-            if(tzi == -1 || result == -1)
+            if (tzi == -1 || result == -1)
             {
                 MessageBox.Show("请选择场次或者结果");
                 return;
@@ -1072,22 +1210,25 @@ namespace dailyAccount
             double wight = temp_wight[result];
 
 
-            StringBuilder sql = new StringBuilder("update dailyaccount set   ");
-            sql.Append(temp[tzi,2]).Append("=").Append(temp[tzi,0]).Append("*").Append(wight);
-            if(result <= 2)
+            StringBuilder sql = new StringBuilder("update  ");
+            sql.Append(tableName).Append(" set ");
+            sql.Append(temp[tzi, 2]).Append("=").Append(temp[tzi, 0]).Append("*").Append(wight);
+            
+            if (result <= 2)
             {
                 sql.Append("*").Append(temp[tzi, 1]);
             };
-
+            if (!date.Equals(""))
+            {
+                sql.Append(" where date = '").Append(date).Append("';");
+            }
             req_.update(sql.ToString());
 
-            setbalance();
-            setnowmoney();
-
-
-
-
+            setbalance(tableName, date);
+            setnowmoney(tableName, date);
         }
+
+
 
         private void initDropList()
         {
@@ -1111,22 +1252,6 @@ namespace dailyAccount
             result_.Items.Add("全输");
 
 
-            //eName_.Items.Add("杨东杰");
-            //eName_.Items.Add("高国强");
-            //eName_.Items.Add("杨飞");
-            //eName_.Items.Add("郭科峰");
-            //eName_.Items.Add("吴娜");
-            //eName_.Items.Add("聂俊勇");
-            //eName_.Items.Add("张洪佳");
-            //eName_.Items.Add("张孝猛");
-            //eName_.Items.Add("申玉龙");
-            //eName_.Items.Add("段龙辉");
-            //eName_.Items.Add("王利强");
-            //eName_.Items.Add("黄意");
-            //eName_.Items.Add("杨晓丹");
-            //eName_.Items.Add("张朝生");
-            //eName_.Items.Add("毛帅");
-
             foreach(user use in users)
             {
                 if(use.Userclass > 0)
@@ -1142,26 +1267,41 @@ namespace dailyAccount
 
         private void setnowmoney()
         {
+            //string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+            //req_ = new Request(connStr);
+
+
+
+            //StringBuilder sql = new StringBuilder("update dailyaccount set nowmoney = initmoney + ifnull(deposit,0) + ifnull(rebate,0)");
+            //sql.Append(" + ifnull(result1,0)");
+            //sql.Append(" + ifnull(result2,0)");
+            //sql.Append(" + ifnull(result3,0)");
+            //sql.Append(" + ifnull(result4,0)");
+            //sql.Append(" + ifnull(result5,0)");
+            //sql.Append(" + ifnull(result6,0)");
+            //sql.Append(" + ifnull(result7,0)");
+            //sql.Append(" + ifnull(result8,0)");
+            //sql.Append(" + ifnull(result9,0)");
+            //sql.Append(" + ifnull(result10,0)");
+            //sql.Append(" + ifnull(result11,0)");
+            //sql.Append("-IF(LENGTH(wdresult1) > 0,withdraw1,0)");
+            //sql.Append("-IF(LENGTH(wdresult2) > 0,withdraw2,0)");
+            //req_.update(sql.ToString());
+            setnowmoney("dailyaccount","");
+
+
+        }
+
+        private void setnowmoney(string tableName, string date)
+        {
             string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
             req_ = new Request(connStr);
 
 
 
-            StringBuilder sql = new StringBuilder("update dailyaccount set nowmoney = initmoney + ifnull(deposit,0) + ifnull(rebate,0)");
-            //sql.Append(" + ifnull(result1,0-ifnull(tzmoney1,0))");
-            //sql.Append(" + ifnull(result2,0-ifnull(tzmoney2,0))");
-            //sql.Append(" + ifnull(result3,0-ifnull(tzmoney3,0))");
-            //sql.Append(" + ifnull(result4,0-ifnull(tzmoney4,0))");
-            //sql.Append(" + ifnull(result5,0-ifnull(tzmoney5,0))");
-            //sql.Append(" + ifnull(result6,0-ifnull(tzmoney6,0))");
-            //sql.Append(" + ifnull(result7,0-ifnull(tzmoney7,0))");
-            //sql.Append(" + ifnull(result8,0-ifnull(tzmoney8,0) )");
-            //sql.Append(" + ifnull(result9,0-ifnull(tzmoney9,0))");
-            //sql.Append(" + ifnull(result10,0-ifnull(tzmoney10,0))");
-            //sql.Append(" + ifnull(result11,0-ifnull(tzmoney11,0))");
-            //sql.Append("-IF(LENGTH(wdresult1) > 0,withdraw1,0)");
-            //sql.Append("-IF(LENGTH(wdresult2) > 0,withdraw2,0)");
-
+            StringBuilder sql = new StringBuilder("update ");
+            //    sql.Append(tableName).Append(" set nowmoney = initmoney + ifnull(deposit, 0) + ifnull(rebate, 0)");
+            sql.Append(tableName).Append(" set nowmoney = initmoney + ifnull(deposit, 0) ");
             sql.Append(" + ifnull(result1,0)");
             sql.Append(" + ifnull(result2,0)");
             sql.Append(" + ifnull(result3,0)");
@@ -1176,28 +1316,55 @@ namespace dailyAccount
             sql.Append("-IF(LENGTH(wdresult1) > 0,withdraw1,0)");
             sql.Append("-IF(LENGTH(wdresult2) > 0,withdraw2,0)");
 
-
-
-
-
-
-
-
-
+            if (!date.Equals(""))
+            {
+                sql.Append(" where date = '").Append(date).Append("'");
+            }
 
             req_.update(sql.ToString());
 
 
         }
 
+
         private void setbalance()
+        {
+            //string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+            //req_ = new Request(connStr);
+
+
+
+            //StringBuilder sql = new StringBuilder("update dailyaccount set balance =  ifnull(rebate,0)");
+            //sql.Append(" + ifnull(result1,0)");
+            //sql.Append(" + ifnull(result2,0)");
+            //sql.Append(" + ifnull(result3,0)");
+            //sql.Append(" + ifnull(result4,0)");
+            //sql.Append(" + ifnull(result5,0)");
+            //sql.Append(" + ifnull(result6,0)");
+            //sql.Append(" + ifnull(result7,0)");
+            //sql.Append(" + ifnull(result8,0)");
+            //sql.Append(" + ifnull(result9,0)");
+            //sql.Append(" + ifnull(result10,0)");
+            //sql.Append(" + ifnull(result11,0)");
+
+
+
+            //req_.update(sql.ToString());
+            setbalance("dailyaccount","");
+
+
+        }
+
+        private void setbalance(string tableName, string date)
         {
             string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
             req_ = new Request(connStr);
 
 
 
-            StringBuilder sql = new StringBuilder("update dailyaccount set balance =  ifnull(rebate,0)");
+            StringBuilder sql = new StringBuilder("update ");
+            //     sql.Append(tableName).Append(" set balance =  ifnull(rebate,0)");
+            sql.Append(tableName).Append(" set balance =  0");
             sql.Append(" + ifnull(result1,0)");
             sql.Append(" + ifnull(result2,0)");
             sql.Append(" + ifnull(result3,0)");
@@ -1209,13 +1376,15 @@ namespace dailyAccount
             sql.Append(" + ifnull(result9,0)");
             sql.Append(" + ifnull(result10,0)");
             sql.Append(" + ifnull(result11,0)");
-        //    sql.Append("-IF(LENGTH(wdresult1) > 0,withdraw1,0)");
-        //    sql.Append("-IF(LENGTH(wdresult2) > 0,withdraw2,0)");
+            //    sql.Append("-IF(LENGTH(wdresult1) > 0,withdraw1,0)");
+            //    sql.Append("-IF(LENGTH(wdresult2) > 0,withdraw2,0)");
+            if (!date.Equals(""))
+            {
+                sql.Append(" where date = '").Append(date).Append("'");
+            }
 
 
             req_.update(sql.ToString());
-
-
         }
 
         private void clear()
@@ -1357,7 +1526,7 @@ namespace dailyAccount
 
 
 
-
+         
 
 
         }
@@ -1497,7 +1666,8 @@ namespace dailyAccount
 
         private void queryAllBTN__Click(object sender, EventArgs e)
         {
-
+            setCommitBlock();
+            historyDate.Clear();
             string name;
             if (eName_.SelectedItem == null)
             {
@@ -1509,9 +1679,9 @@ namespace dailyAccount
             string endDateStr = endDate_.Value.ToShortDateString();
             string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
             req_ = new Request(connStr);
-            DataTable dt = req_.getHistoryData(SiteOwner, userClass, startDateStr,endDateStr, users, name);
+            DataTable dt = req_.getHistoryData(SiteOwner, userClass, startDateStr,endDateStr, users, name, materialOwner_.Text);
             SetHeader();
-            int i = 1;
+
 
             ((Microsoft.Office.Interop.Owc11.Worksheet)this.ss_.Worksheets["Sheet1"]).Range["A1:zz65536"].CopyFromRecordset(ADONETtoADO.ConvertDataTableToRecordset(dt));
 
@@ -1553,40 +1723,379 @@ namespace dailyAccount
         }
 
 
-        private void setdeposite()
+        private void setRebate(string userName)
         {
             getArchiveFlag();
             if (archiveTimes > 0)
             {
-                return;
+       //         return;
             }
             int lastMoney;
             int nowMonwy;
+            int blockMoney;
             int rebate;
             int index;
+            int lastRebate;
             string sql;
-            sql = $"select sum(nowMoney) money from dailyaccount_history where user = '{SiteOwner}' and date = '{archiveDate}'";
+            sql = $"select ifnull(sum(nowMoney),0)  money from dailyaccount_history where user = '{userName}' and date = '{archiveDate}'";
             DataTable dt = new DataTable();
             dt = req_.select(sql );
             lastMoney = int.Parse(dt.Rows[0]["money"].ToString());
 
-            sql = $"select sum(initmoney) money from dailyAccount where user = '{SiteOwner}'";
+            sql = $"select ifnull(sum(initmoney),0) money from dailyAccount where user = '{userName}'";
             dt = req_.select(sql);
             nowMonwy = int.Parse(dt.Rows[0]["money"].ToString());
+            sql = $"select ifnull(sum(IF(length(dailyaccount_history.blockstatus) > 0, dailyaccount_history.block, 0)),0) money from dailyaccount_history where user = '{userName}' and date = '{archiveDate}'";
+            dt = req_.select(sql);
+            blockMoney = int.Parse(dt.Rows[0]["money"].ToString());
+          
 
-            rebate = nowMonwy - lastMoney;
-
-            sql = $"select id  from dailyAccount where user = '{SiteOwner}' order by id desc limit 1";
+            sql = $"select id  from dailyaccount_history where user = '{userName}' and date =  '{archiveDate}' order by id asc limit 1";
             dt = req_.select(sql);
             if(dt.Rows.Count > 0) { 
             index = int.Parse(dt.Rows[0]["id"].ToString());
 
-            sql = $"update dailyAccount set rebate = {rebate}  where id = {index} and user ='{SiteOwner}'";
+
+                sql = $"select ifnull(rebate,0) rebate from dailyaccount_history where  id = {index} and user ='{userName}'  and date =  '{archiveDate}'";
+                dt = req_.select(sql);
+                lastRebate = int.Parse(dt.Rows[0]["rebate"].ToString());
+
+
+                rebate = nowMonwy - lastMoney + blockMoney ;
+
+                sql = $"update dailyaccount_history set rebate = {rebate}  where id = {index} and user ='{userName}'  and date =  '{archiveDate}'";
 
                 req_.update(sql);
+
+                setbalance("dailyaccount_history",archiveDate);
             }
 
         }
 
+        private void reportBTN__Click(object sender, EventArgs e)
+        {
+            string startDateStr = startDate_.Value.ToShortDateString();
+            string endDateStr = endDate_.Value.ToShortDateString();
+            string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+            req_ = new Request(connStr);
+            setnowmoney();
+
+            StringBuilder sql = new StringBuilder("");
+   
+         
+            string temp = "";
+
+            foreach (user us in users)
+            {
+                temp += ",'";
+                temp += us.Username;
+                temp += "'";
+            }
+
+
+            if (userClass == 0)
+            {
+              //  sql.Append("select atable.username 姓名, a 现金网 , aa 点数, a*aa 提成, b 公司365, bb 点数, b* bb 提成, c 个人365, cc 点数, c* cc 提成, d 被扣, dd 点数, d* dd 金额, e 追回, ee 点数, e* ee 提成,  IFNULL(a, 0) * aa + IFNULL(b, bb) * bb + IFNULL(c, 0) * cc - IFNULL(d, 0) * dd + IFNULL(e, 0) * ee  总计 from (select `user`.username, sum(ifnull(rebate,0) + IFNULL(result1,0) + IFNULL(result2,0) + IFNULL(result3,0) + IFNULL(result4,0) + IFNULL(result5,0) +  IFNULL(result6,0) +  IFNULL(result7,0) + IFNULL(result8,0) + IFNULL(result9,0)) a, userprofile.commission aa, IFNULL(sum(result10), 0) b, userprofile.comp365com bb, IFNULL(sum(result11), 0) c, userprofile.persion365com cc, IFNULL(sum(IF(length(dailyaccount_history.blockstatus) > 0 , dailyaccount_history.block, 0)), 0) d, userprofile.blockcom dd, IFNULL(sum(recall), 0) e, userprofile.recallcom ee from dailyaccount_history , user, userprofile where `user`.userid = userprofile.userid and `user`.username = dailyaccount_history.user   ");
+                sql.Append("select atable.username 姓名, a 现金网 ,  a*aa 提成, b 公司365,  b* bb 提成, c 个人365,  c* cc 提成, d 被扣,  d* dd 金额, e 追回,  ifnull(e,0)* ifnull(ee,0) 提成3,  IFNULL(a, 0) * aa + IFNULL(b, bb) * bb + IFNULL(c, 0) * cc - IFNULL(d, 0) * dd + IFNULL(e, 0) * ee  总计 from (select `user`.username, sum(ifnull(rebate,0) + IFNULL(result1,0) + IFNULL(result2,0) + IFNULL(result3,0) + IFNULL(result4,0) + IFNULL(result5,0) +  IFNULL(result6,0) +  IFNULL(result7,0) + IFNULL(result8,0) + IFNULL(result9,0)) a, userprofile.commission aa, IFNULL(sum(result10), 0) b, userprofile.comp365com bb, IFNULL(sum(result11), 0) c, userprofile.persion365com cc, IFNULL(sum(IF(length(dailyaccount_history.blockstatus) > 0 , dailyaccount_history.block, 0)), 0) d, userprofile.blockcom dd, IFNULL(sum(IF(length(dailyaccount_history.recallstatus) > 0 , dailyaccount_history.recall, 0)), 0) e, userprofile.recallcom ee from dailyaccount_history , user, userprofile where `user`.userid = userprofile.userid and `user`.username = dailyaccount_history.user   ");
+
+            }
+            else
+            {
+
+            //    sql.Append("select atable.username 姓名, a 现金网 , aa 点数, a*aa 提成, b 公司365, bb 点数, b* bb 提成, c 个人365, cc 点数, c* cc 提成, d 被扣, dd 点数, d* dd 金额, e 追回, ee 点数, e* ee 提成,  IFNULL(a, 0) * aa + IFNULL(b, bb) * bb + IFNULL(c, 0) * cc - IFNULL(d, 0) * dd + IFNULL(e, 0) * ee  总计 from (select `user`.username, sum(ifnull(rebate,0) + IFNULL(result1,0) + IFNULL(result2,0) + IFNULL(result3,0) + IFNULL(result4,0) + IFNULL(result5,0) +  IFNULL(result6,0) +  IFNULL(result7,0) + IFNULL(result8,0) + IFNULL(result9,0)) a, userprofile.commission aa, IFNULL(sum(result10), 0) b, userprofile.comp365com bb, IFNULL(sum(result11), 0) c, userprofile.persion365com cc, IFNULL(sum(IF(length(dailyaccount_history.blockstatus) > 0 , dailyaccount_history.block, 0)), 0) d, userprofile.blockcom dd, IFNULL(sum(recall), 0) e, userprofile.recallcom ee from dailyaccount_history , user, userprofile where `user`.userid = userprofile.userid and `user`.username = dailyaccount_history.user  and  dailyaccount_history.user = '");
+                sql.Append("select atable.username 姓名, a 现金网 ,  a*aa 提成, b 公司365, b* bb 提成1, c 个人365, c* cc 提成2, d 被扣,  d* dd 金额, e 追回, ifnull(e,0)* ifnull(ee,0) 提成3,  IFNULL(a, 0) * aa + IFNULL(b, bb) * bb + IFNULL(c, 0) * cc - IFNULL(d, 0) * dd + IFNULL(e, 0) * ee  总计 from (select `user`.username, sum(ifnull(rebate,0) + IFNULL(result1,0) + IFNULL(result2,0) + IFNULL(result3,0) + IFNULL(result4,0) + IFNULL(result5,0) +  IFNULL(result6,0) +  IFNULL(result7,0) + IFNULL(result8,0) + IFNULL(result9,0)) a, userprofile.commission aa, IFNULL(sum(result10), 0) b, userprofile.comp365com bb, IFNULL(sum(result11), 0) c, userprofile.persion365com cc, IFNULL(sum(IF(length(dailyaccount_history.blockstatus) > 0 , dailyaccount_history.block, 0)), 0) d, userprofile.blockcom dd, IFNULL(sum(IF(length(dailyaccount_history.recallstatus) > 0 , dailyaccount_history.recall, 0)), 0) e, userprofile.recallcom ee from dailyaccount_history , user, userprofile where `user`.userid = userprofile.userid and `user`.username = dailyaccount_history.user  and  dailyaccount_history.user = '");
+                sql.Append(SiteOwner);
+                sql.Append("'");
+       
+            }
+
+             sql.Append("and date between  '").Append(startDateStr).Append("' and '").Append(endDateStr).Append("'  GROUP BY dailyaccount_history.`user` order by field(dailyaccount_history.`user`");
+            sql.Append(temp);
+            sql.Append(")) as atable ;");
+            DataTable dt = req_.select(sql.ToString());
+         //   SetHeader_tj();
+            int i = 1;
+            int a = 0, aa = 0, aaa = 0, b = 0, bb = 0, bbb = 0, c = 0, cc = 0, ccc = 0, d = 0, dd = 0, ddd = 0, f = 0, ff = 0, fff = 0, g = 0;
+            StringBuilder tempStr = new StringBuilder("总计,");
+
+            DataRow drt = dt.NewRow();
+            drt[1] = 0; drt[2] = 0; drt[3] = 0; drt[4] = 0; drt[5] = 0; drt[6] = 0; drt[7] = 0; drt[8] = 0; drt[9] = 0; drt[10] = 0; drt[11] = 0;
+
+
+            dt.Rows.Add(drt);
+
+            ((Microsoft.Office.Interop.Owc11.Worksheet)this.ss_.Worksheets["Sheet1"]).Range["A1:zz65536"].CopyFromRecordset(ADONETtoADO.ConvertDataTableToRecordset(dt));
+            //      (ss_.Cells[1, 1] as Range).ParseText(header_tj, "\t");
+
+
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                i++;
+                a += Convert.ToInt32(dr["现金网"]);
+        //        aa += Convert.ToInt32(dr["点数"]);
+                aaa += Convert.ToInt32(dr["提成"]);
+
+                b += Convert.ToInt32(dr["公司365"]);
+       //         bb += Convert.ToInt32(dr["点数1"]);
+                bbb += Convert.ToInt32(dr["提成1"]);
+
+                c += Convert.ToInt32(dr["个人365"]);
+        //        cc += Convert.ToInt32(dr["点数2"]);
+                ccc += Convert.ToInt32(dr["提成2"]);
+
+                d += Convert.ToInt32(dr["被扣"]);
+           //     dd += Convert.ToInt32(dr["点数3"]);
+                ddd += Convert.ToInt32(dr["金额"]);
+
+
+                f += Convert.ToInt32(dr["追回"]);
+
+
+           //     ff += Convert.ToInt32(dr["点数4"]);
+                fff += Convert.ToInt32(dr["提成3"]);
+
+               g+= Convert.ToInt32(dr["总计"]);
+
+
+
+
+
+
+            }
+            tempStr.Append(a).Append(",");
+     //       tempStr.Append("").Append(",");
+            tempStr.Append(aaa).Append(",");
+            tempStr.Append(b).Append(",");
+      //      tempStr.Append("").Append(",");
+            tempStr.Append(bbb).Append(",");
+            tempStr.Append(c).Append(",");
+    //        tempStr.Append("").Append(",");
+            tempStr.Append(ccc).Append(",");
+            tempStr.Append(d).Append(",");
+   //         tempStr.Append("").Append(",");
+            tempStr.Append(ddd).Append(",");
+            tempStr.Append(f).Append(",");
+  //          tempStr.Append("").Append(",");
+            tempStr.Append(fff).Append(",");
+            tempStr.Append(g).Append(",");
+ //           tempStr.Append("").Append(",");
+            tempStr.Append(aaa + bbb + ccc - ddd + fff ).Append(",");
+
+            (ss_.Cells[i, 1] as Range).ParseText(tempStr.ToString(), ",");
+            (ss_.Cells[i, 1] as Range).EntireRow.Font.set_Color("red");
+
+
+
+            ss_.Width = 10000;
+        }
+
+        private void setCommitBlock()
+        {
+            commitblock = 1;
+        }
+
+        private void resetCommitBlock()
+        {
+            commitblock = 0;
+        }
+
+        private Boolean checkCommitBlock()
+        {
+            return commitblock == 1 ? false : true;
+        }
+
+ 
+
+        private void updateHistoryBTN__Click(object sender, EventArgs e)
+        {
+            if(commitblock == 1)
+            {
+                //
+            }else
+            {
+                MessageBox.Show("当天数据界面，禁止更新历史数据");
+                return;
+            }
+            updateHistory( sender,  e);
+            foreach(user us in users)
+            {
+                setRebate(us.Username);
+            }
+        }
+
+
+        private void updateHistory(object sender, EventArgs e)
+        {
+            Range cells = ss_.Cells;
+            DataTable dt = toDT(cells);
+            try
+            {
+                string connstr = System.Configuration.ConfigurationManager.AppSettings["connectionstring"];
+                req_ = new Request(connstr);
+
+                string sb ;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    item item_;
+                    item_ = dr2ar(dr);
+                //    DateTime date = DateTime.ParseExact(item_.Date, "dd-MMM-yy",
+                //                       System.Globalization.CultureInfo.InvariantCulture);
+
+                    string dateTemp = dateEngtoChn(item_.Date);
+                    // if(historyD)
+                    if (!historyDate.Contains(dateTemp)) { 
+                    historyDate.Add(dateTemp);
+                    }
+                    sb = $"insert into dailyaccount_history  set id = '{item_.Id}' , user = '{item_.User}', date = '{dateTemp}' on DUPLICATE KEY UPDATE  wdresult1='{item_.Wdresult1}', wdresult2='{item_.Wdresult2}', blockstatus='{item_.Blockstatus}', recallstatus = '{item_.Recallstatus}'; ";
+
+                    int number;
+                   number = req_.update(sb);
+
+                    if (number == 1)
+                    {
+                    //    LogUtl.info($"添加：<{item_.Website}><{item_.Card_owner}>");
+                        //      req_.clientSetStatus(item_.User, 1);
+                    }
+                   if (number == 2)
+                    {
+                        LogUtl.info($"更新：<{item_.Website}><{item_.Card_owner}>");
+                        //      req_.clientSetStatus(item_.User, 1);
+                    }
+                    else
+                    {
+                        LogUtl.err($"失败：<{item_.Website}><{item_.Card_owner}>");
+                    }
+
+                }
+
+                foreach(string date in historyDate)
+                {
+                 // setResult("dailyaccount_history",date);
+                    setbalance("dailyaccount_history", date);
+                    setnowmoney("dailyaccount_history", date);
+                }
+
+             
+
+            }
+
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private string dateEngtoChn(string dateStr)
+        {
+           // string temp;
+            DateTime date = DateTime.ParseExact(dateStr, "dd-MMM-yy",  System.Globalization.CultureInfo.InvariantCulture);
+            return date.ToShortDateString();
+          //  return temp;
+        }
+
+        private DataTable toDTHistory(Range r)
+        {
+            DataTable dt = new DataTable();
+
+            // 创建表头
+            // 网站	网站套次	网名	网站用户名	负责人	IP地	昨总额	充值	充值备注	网站金额	下注1	赔率	赢亏	下注2	赔率	赢亏	下注3	赔率	赢亏	下注4	赔率	赢亏	下注5	赔率	赢亏	下注6	赔率	赢亏	一次提款	是否到	二次提款	是否到	余额
+            for (int i = (int)BetHead.begin; i < (int)BetHead.end; i++)
+            {
+                DataColumn dc = new DataColumn(((BetHead)i).ToString());
+                dt.Columns.Add(dc);
+            }
+
+           // DataColumn dc = ;
+         
+
+            var CheckEmptyLine = new Func<Range, int, bool>((_r, nrow) =>
+            {
+                //序号
+                string index = (_r[nrow, (int)BetHead.id] as Range)?.Text?.ToString();
+                //类型
+                string type = (_r[nrow, (int)BetHead.websitetype] as Range)?.Text?.ToString();
+                // 网站
+                string site = (_r[nrow, (int)BetHead.website] as Range)?.Text?.ToString();
+                // 网名
+                string account = (_r[nrow, (int)BetHead.loginname] as Range)?.Text?.ToString();
+                // 网站资料人
+                string cardOwner = (_r[nrow, (int)BetHead.cardowner] as Range)?.Text?.ToString();
+
+                if (string.IsNullOrWhiteSpace(index)
+                    || string.IsNullOrWhiteSpace(type)
+                    || string.IsNullOrWhiteSpace(site)
+                    || string.IsNullOrWhiteSpace(account)
+                    || string.IsNullOrWhiteSpace(cardOwner))
+                {
+                    return true;
+                }
+
+                return false;
+            });
+
+            // Range (2, 1)->(n, m)
+            // 1：Head，从2开始
+            if (userClass == 0)
+            {
+                //   insert into game(account, initamount, memo) values('{account}',{ money}, '{(auto ? "自动" : "手动")}') ON DUPLICATE KEY UPDATE nowamount = { money}, memo = '{(auto ? "自动" : "手动")}'";
+
+                DataRow dr = dt.NewRow();
+                StringBuilder tztitle = new StringBuilder("insert into tztitle(id, title) value (0,  '");
+                string temp = "";
+                for (int col = 1; col < dt.Columns.Count; ++col)
+                {
+                    temp += (r[2, col] as Range)?.Text.ToString().Trim();
+                    temp += "\t";
+
+
+
+
+
+                }
+                tztitle.Append(temp);
+                tztitle.Append("') ON DUPLICATE KEY UPDATE title = ' ").Append(temp).Append("'");
+                string connStr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"];
+                req_ = new Request(connStr);
+                req_.update(tztitle.ToString());
+
+            }
+
+
+            int emptyLineCnt = 0;
+            for (int row = 3; row > 0; row++) // 无限循环
+            {
+                if (CheckEmptyLine(r, row))
+                {
+                    if (emptyLineCnt == 4)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        emptyLineCnt++;
+                        continue;
+                    }
+                }
+
+                emptyLineCnt = 0;
+
+                DataRow dr = dt.NewRow();
+                for (int col = 1; col < dt.Columns.Count; ++col)
+                {
+                    if (col == (int)BetHead.website)
+                    {
+                        dr[col] = CorrectSite2((r[row, col] as Range)?.Text.ToString().Trim());
+                    }
+                    else
+                    {
+                        dr[col] = (r[row, col] as Range)?.Text.ToString().Trim();
+                    }
+                }
+                dt.Rows.Add(dr);
+            }
+
+            return dt;
+        }
     }
 }

@@ -33,6 +33,8 @@
             this.refresh_BTN = new System.Windows.Forms.Button();
             this.dataitemView_ = new System.Windows.Forms.DataGridView();
             this.bottomLayout_ = new System.Windows.Forms.Panel();
+            this.materialOwner_ = new System.Windows.Forms.TextBox();
+            this.updateHistoryBTN_ = new System.Windows.Forms.Button();
             this.reportBTN_ = new System.Windows.Forms.Button();
             this.queryAllBTN_ = new System.Windows.Forms.Button();
             this.endDate_ = new System.Windows.Forms.DateTimePicker();
@@ -90,6 +92,8 @@
             // 
             // bottomLayout_
             // 
+            this.bottomLayout_.Controls.Add(this.materialOwner_);
+            this.bottomLayout_.Controls.Add(this.updateHistoryBTN_);
             this.bottomLayout_.Controls.Add(this.reportBTN_);
             this.bottomLayout_.Controls.Add(this.queryAllBTN_);
             this.bottomLayout_.Controls.Add(this.endDate_);
@@ -117,6 +121,23 @@
             this.bottomLayout_.Size = new System.Drawing.Size(1727, 165);
             this.bottomLayout_.TabIndex = 4;
             // 
+            // materialOwner_
+            // 
+            this.materialOwner_.Location = new System.Drawing.Point(1578, 21);
+            this.materialOwner_.Name = "materialOwner_";
+            this.materialOwner_.Size = new System.Drawing.Size(100, 21);
+            this.materialOwner_.TabIndex = 22;
+            // 
+            // updateHistoryBTN_
+            // 
+            this.updateHistoryBTN_.Location = new System.Drawing.Point(1488, 19);
+            this.updateHistoryBTN_.Name = "updateHistoryBTN_";
+            this.updateHistoryBTN_.Size = new System.Drawing.Size(87, 23);
+            this.updateHistoryBTN_.TabIndex = 21;
+            this.updateHistoryBTN_.Text = "更新历史纪录";
+            this.updateHistoryBTN_.UseVisualStyleBackColor = true;
+            this.updateHistoryBTN_.Click += new System.EventHandler(this.updateHistoryBTN__Click);
+            // 
             // reportBTN_
             // 
             this.reportBTN_.Location = new System.Drawing.Point(1578, 55);
@@ -125,6 +146,7 @@
             this.reportBTN_.TabIndex = 20;
             this.reportBTN_.Text = "财务";
             this.reportBTN_.UseVisualStyleBackColor = true;
+            this.reportBTN_.Click += new System.EventHandler(this.reportBTN__Click);
             // 
             // queryAllBTN_
             // 
@@ -302,7 +324,7 @@
             // 
             // ss_
             // 
-         
+        //    this.ss_.DataSource = null;
             this.ss_.Enabled = true;
             this.ss_.Location = new System.Drawing.Point(1, 1);
             this.ss_.Name = "ss_";
@@ -325,6 +347,7 @@
             this.Resize += new System.EventHandler(this.Form1_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.dataitemView_)).EndInit();
             this.bottomLayout_.ResumeLayout(false);
+            this.bottomLayout_.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ss_)).EndInit();
             this.ResumeLayout(false);
 
@@ -357,6 +380,8 @@
         private System.Windows.Forms.Button queryAllBTN_;
         private System.Windows.Forms.DateTimePicker endDate_;
         private System.Windows.Forms.DateTimePicker startDate_;
+        private System.Windows.Forms.Button updateHistoryBTN_;
+        private System.Windows.Forms.TextBox materialOwner_;
     }
 }
 

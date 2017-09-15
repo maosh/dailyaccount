@@ -150,7 +150,7 @@ namespace dailyAccount
             if(userClass == 1)
             {
                 sql = $"select * from  dailyaccount where user = '{user}' order by id  ";
-                sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),'',sum(withdraw2),'', sum(nowmoney), sum(balance), sum(balance),'','' from dailyaccount where user = '{user}';";
+                sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),sum(IF(length(dailyaccount.wdresult1) > 0, dailyaccount.withdraw1, 0)),sum(withdraw2),sum(IF(length(dailyaccount.wdresult2) > 0, dailyaccount.withdraw2, 0)), sum(nowmoney), sum(balance),sum(block),sum(IF(length(dailyaccount.blockstatus) > 0, dailyaccount.block, 0)),sum(recall),sum(IF(length(dailyaccount.recallstatus) > 0, dailyaccount.recall, 0))  from dailyaccount where user = '{user}';";
             }
             else
             {
@@ -170,7 +170,7 @@ namespace dailyAccount
 
 
 
-                sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),'',sum(withdraw2),'', sum(nowmoney), sum(balance), sum(balance),'','' from dailyaccount;";
+                sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),sum(IF(length(dailyaccount.wdresult1) > 0, dailyaccount.withdraw1, 0)),sum(withdraw2),sum(IF(length(dailyaccount.wdresult2) > 0, dailyaccount.wdresult2, 0)), sum(nowmoney), sum(balance),sum(block),sum(IF(length(dailyaccount.blockstatus) > 0, dailyaccount.block, 0)),sum(recall),sum(IF(length(dailyaccount.recallstatus) > 0, dailyaccount.recall, 0))  from dailyaccount;";
             }
             DataTable dt = select(sql);
 
@@ -182,13 +182,14 @@ namespace dailyAccount
             drt[31] = 0; drt[32] = 0; drt[33] = 0; drt[34] = 0; drt[35] = 0; drt[36] = 0; drt[37] = 0; drt[38] = 0; drt[39] = 0; drt[40] = 0;
 
             drt[41] = 0; drt[42] = 0; drt[43] = 0; drt[44] = 0; drt[45] = 0; drt[46] = 0; drt[47] = 0; drt[48] = 0; drt[49] = 0; drt[50] = 0; drt[51] = 0;
+            drt[52] = 0; drt[53] = 0; drt[54] = 0; 
             DataTable  dt2 = select(sql1);
 
             // drt
 
         
 
-            for(int i =1; i < 50; i++)
+            for(int i =1; i < 54; i++)
             {
                 drt[i] = dt2.Rows[0][i];
             }
@@ -209,20 +210,20 @@ namespace dailyAccount
             return dt;
         }
 
-        public DataTable getHistoryData(string user, int userClass, string startDate,string endDate, ArrayList userList, string selectedName)
+        public DataTable getHistoryData(string user, int userClass, string startDate,string endDate, ArrayList userList, string selectedName, string materialOwner)
         {
             string sql;
             string sql1;
             if (userClass == 1)
             {
                 if (endDate.Equals("")) {
-                sql = $"select * from  dailyaccount_history where user = '{user}' and date = '{startDate}' order by id";
-                sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),'',sum(withdraw2),'', sum(nowmoney), sum(balance), sum(balance),'','' from dailyaccount_history where user = '{user}'  and date between '{startDate}' and '{endDate}';";
+                sql = $"select * from  dailyaccount_history where cardowner like '%{materialOwner}%' and user = '{user}' and date = '{startDate}' order by id";
+                sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),sum(IF(length(dailyaccount_history.wdresult1) > 0, dailyaccount_history.withdraw1, 0)),sum(withdraw2),sum(IF(length(dailyaccount_history.withdraw2) > 0, dailyaccount_history.withdraw2, 0)), sum(nowmoney), sum(balance),sum(ifnull(block,0)),sum(IF(length(dailyaccount_history.blockstatus) > 0, dailyaccount_history.block, 0)),sum(ifnull(recall,0)),sum(IF(length(dailyaccount_history.recallstatus) > 0, dailyaccount_history.recall, 0))  from dailyaccount_history where user = '{user}'  and date = '{startDate}';";
                 }
                 else
                 {
-                    sql = $"select * from  dailyaccount_history where user = '{user}' and date between '{startDate}' and '{endDate}' order by id";
-                    sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),'',sum(withdraw2),'', sum(nowmoney), sum(balance), sum(balance),'','' from dailyaccount_history where user = '{user}'  and date  between '{startDate}' and '{endDate}';";
+                    sql = $"select * from  dailyaccount_history where  cardowner like '%{materialOwner}%' and  user = '{user}' and date between '{startDate}' and '{endDate}' order by id";
+                    sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),sum(IF(length(dailyaccount_history.wdresult1) > 0, dailyaccount_history.withdraw1, 0)),sum(withdraw2),sum(IF(length(dailyaccount_history.withdraw2) > 0, dailyaccount_history.withdraw2, 0)), sum(nowmoney), sum(balance), sum(ifnull(block,0)),sum(IF(length(dailyaccount_history.blockstatus) > 0, dailyaccount_history.block, 0)),sum(ifnull(recall,0)),sum(IF(length(dailyaccount_history.recallstatus) > 0, dailyaccount_history.recall, 0)) from dailyaccount_history where user = '{user}'  and date  between '{startDate}' and '{endDate}';";
 
                 }
             }
@@ -240,14 +241,14 @@ namespace dailyAccount
                     temp += "'";
                 }
                 if (endDate.Equals("")) { 
-                sql = $"select * from  dailyaccount_history where date = '{startDate}'";
-                    sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),'',sum(withdraw2),'', sum(nowmoney), sum(balance), sum(balance),'','' from dailyaccount_history where   date = '{startDate}'";
+                sql = $"select * from  dailyaccount_history where  cardowner like '%{materialOwner}%' and date = '{startDate}'";
+                    sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),sum(IF(length(dailyaccount_history.wdresult1) > 0, dailyaccount_history.withdraw1, 0)),sum(withdraw2),sum(IF(length(dailyaccount_history.withdraw2) > 0, dailyaccount_history.withdraw2, 0)), sum(nowmoney), sum(ifnull(balance,0)), sum(ifnull(block,0)),sum(IF(length(dailyaccount_history.blockstatus) > 0, dailyaccount_history.block, 0)),sum(ifnull(recall,0)),sum(IF(length(dailyaccount_history.recallstatus) > 0, dailyaccount_history.recall, 0)) from dailyaccount_history where   cardowner like '%{materialOwner}%' and date = '{startDate}'";
 
                 }
                 else
                 {
-                    sql = $"select * from  dailyaccount_history where date between '{startDate}' and '{endDate}' ";
-                    sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),'',sum(withdraw2),'', sum(nowmoney), sum(balance), sum(balance),'','' from dailyaccount_history where   date  between '{startDate}' and '{endDate}'";
+                    sql = $"select * from  dailyaccount_history where  cardowner like '%{materialOwner}%' and  date between '{startDate}' and '{endDate}' ";
+                    sql1 = $"select '', '','','','', '{user}','',sum(initmoney), sum(avaimoney), sum(deposit), sum(rebate), sum(tzmoney1), sum(result1) / sum(tzmoney1), sum(result1),sum(tzmoney2), sum(result2) / sum(tzmoney2), sum(result2),sum(tzmoney3), sum(result3) / sum(tzmoney3), sum(result3),sum(tzmoney4), sum(result4) / sum(tzmoney4), sum(result4),sum(tzmoney5), sum(result5) / sum(tzmoney5), sum(result5),sum(tzmoney6), sum(result6) / sum(tzmoney6), sum(result6),sum(tzmoney7), sum(result7) / sum(tzmoney7), sum(result7),sum(tzmoney8), sum(result8) / sum(tzmoney8), sum(result8),sum(tzmoney9), sum(result9) / sum(tzmoney9), sum(result9),sum(tzmoney10), sum(result10) / sum(tzmoney10), sum(result10),sum(tzmoney11), sum(result11) / sum(tzmoney11), sum(result11), sum(withdraw1),sum(IF(length(dailyaccount_history.wdresult1) > 0, dailyaccount_history.withdraw1, 0)),sum(withdraw2),sum(IF(length(dailyaccount_history.withdraw2) > 0, dailyaccount_history.withdraw2, 0)), sum(nowmoney), sum(ifnull(balance,0)), sum(ifnull(block,0)),sum(IF(length(dailyaccount_history.blockstatus) > 0, dailyaccount_history.block, 0)),sum(ifnull(recall,0)), sum(IF(length(dailyaccount_history.recallstatus) > 0, dailyaccount_history.recall, 0)) from dailyaccount_history where  cardowner like '%{materialOwner}%' and  date  between '{startDate}' and '{endDate}'";
 
                 }
                 if (!selectedName.Equals(""))
@@ -276,13 +277,14 @@ namespace dailyAccount
             drt[31] = 0; drt[32] = 0; drt[33] = 0; drt[34] = 0; drt[35] = 0; drt[36] = 0; drt[37] = 0; drt[38] = 0; drt[39] = 0; drt[40] = 0;
 
             drt[41] = 0; drt[42] = 0; drt[43] = 0; drt[44] = 0; drt[45] = 0; drt[46] = 0; drt[47] = 0; drt[48] = 0; drt[49] = 0; drt[50] = 0; drt[51] = 0;
+            drt[52] = 0; drt[53] = 0; drt[54] = 0; 
             DataTable dt2 = select(sql1);
 
             // drt
 
 
 
-            for (int i = 1; i < 50; i++)
+            for (int i = 1; i < 54; i++)
             {
                 drt[i] = dt2.Rows[0][i];
             }
@@ -598,7 +600,7 @@ if(item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Appe
             // if (item_.Nowmoney != null) { sql.Append("nowmoney = '").Append(item_.Nowmoney).Append("',"); }
 
             if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
-            if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
+       //     if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
             if (item_.Comment != null) { sql.Append("comment = '").Append(item_.Comment).Append("',"); }
 
             sql.Append("wdresult2 = '").Append(item_.Wdresult2).Append("'");
@@ -804,7 +806,7 @@ if(item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Appe
        //     if (item_.Nowmoney != null) { sql.Append("nowmoney = '").Append(item_.Nowmoney).Append("',"); }
 
             if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
-            if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
+     //       if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
             if (item_.Comment != null) { sql.Append("comment = '").Append(item_.Comment).Append("',"); }
             sql.Append("wdresult2 = '").Append(item_.Wdresult2).Append("';");
 
@@ -901,7 +903,7 @@ if(item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Appe
             // if (item_.Nowmoney != null) { sql.Append("nowmoney = '").Append(item_.Nowmoney).Append("',"); }
 
             if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
-            if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
+        //    if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
          //   if (item_.Comment != null)
             { sql.Append("comment = '").Append(item_.Comment).Append("'"); }
 
@@ -1173,11 +1175,33 @@ if(item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Appe
 
             //     if (item_.Nowmoney != null) { sql.Append("nowmoney = '").Append(item_.Nowmoney).Append("',"); }
 
-            if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
-            if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
-      //      if (item_.Comment != null) { sql.Append("comment = '").Append(item_.Comment).Append("'"); }
+     //       if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
+      //      if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
 
-            if(userClass == 0) {
+            if (userClass != 0)
+            {
+                if (item_db.Block == null )
+                {
+                    if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
+                }
+
+                if (item_db.Recall == null)
+                {
+                    if (item_.Recall != null) { sql.Append("recall = '").Append(item_.Recall).Append("',"); }
+                }
+
+            }
+
+            if(userClass == 0)
+            {
+                sql.Append("blockstatus = '").Append(item_.Blockstatus).Append("',");
+                sql.Append("recallstatus = '").Append(item_.Recallstatus).Append("',");
+            }
+
+
+            //      if (item_.Comment != null) { sql.Append("comment = '").Append(item_.Comment).Append("'"); }
+
+            if (userClass == 0) {
             sql.Append("wdresult2 = '").Append(item_.Wdresult2).Append("',");
             }
             sql.Append("comment = '").Append(item_.Comment).Append("';");
@@ -1322,78 +1346,84 @@ if(item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Appe
             if (item_.Balance != null) { sql.Append("balance = '").Append(item_.Balance).Append("',"); }
 
             if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
+            if (item_.Blockstatus != null) { sql.Append("blockstatus = '").Append(item_.Blockstatus).Append("',"); }
 
-            if (item_.Status != null) { sql.Append("status = '").Append(item_.Status).Append("',"); }
-
+            if (item_.Recall != null) { sql.Append("recall = '").Append(item_.Recall).Append("',"); }
+          
+            if (item_.Recallstatus != null) { sql.Append("recallstatus = '").Append(item_.Recallstatus).Append("',"); }
             if (item_.Comment != null) { sql.Append("comment = '").Append(item_.Comment).Append("',"); }
             sql.Append("wdresult2 = '").Append(item_.Wdresult2).Append("'");
 
             sql.Append("ON DUPLICATE KEY UPDATE  ");
-           { sql.Append("avaimoney = '").Append(item_.Avaimoney).Append("',"); }
-            { sql.Append("deposit = '").Append(item_.Deposit).Append("',"); }
-            { sql.Append("rebate = '").Append(item_.Rebate).Append("',"); }
-            { sql.Append("tzmoney1 = '").Append(item_.Tzmoney1).Append("',"); }
-            { sql.Append("odds1 = '").Append(item_.Odds1).Append("',"); }
-           { sql.Append("result1 = '").Append(item_.Result1).Append("',"); }
+          if(item_.Avaimoney != null) { sql.Append("avaimoney = '").Append(item_.Avaimoney).Append("',"); }
+           if(item_.Deposit !=null) { sql.Append("deposit = '").Append(item_.Deposit).Append("',"); }
+           if(item_.Rebate != null) { sql.Append("rebate = '").Append(item_.Rebate).Append("',"); }
+            if (item_.Tzmoney1 != null) { sql.Append("tzmoney1 = '").Append(item_.Tzmoney1).Append("',"); }
+            if (item_.Odds1 != null) { sql.Append("odds1 = '").Append(item_.Odds1).Append("',"); }
+            if (item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Append("',"); }
 
-             { sql.Append("tzmoney2 = '").Append(item_.Tzmoney2).Append("',"); }
-             { sql.Append("odds2 = '").Append(item_.Odds2).Append("',"); }
+            if (item_.Tzmoney2 != null) { sql.Append("tzmoney2 = '").Append(item_.Tzmoney2).Append("',"); }
+            if (item_.Odds2 != null) { sql.Append("odds2 = '").Append(item_.Odds2).Append("',"); }
 
-            { sql.Append("result2 = '").Append(item_.Result2).Append("',"); }
+            if (item_.Result2 != null) { sql.Append("result2 = '").Append(item_.Result2).Append("',"); }
 
-            { sql.Append("tzmoney3 = '").Append(item_.Tzmoney3).Append("',"); }
-             { sql.Append("odds3 = '").Append(item_.Odds3).Append("',"); }
-           { sql.Append("result3 = '").Append(item_.Result3).Append("',"); }
+            if (item_.Tzmoney3 != null) { sql.Append("tzmoney3 = '").Append(item_.Tzmoney3).Append("',"); }
+            if (item_.Odds3 != null) { sql.Append("odds3 = '").Append(item_.Odds3).Append("',"); }
+            if (item_.Result3 != null) { sql.Append("result3 = '").Append(item_.Result3).Append("',"); }
 
-             { sql.Append("tzmoney4 = '").Append(item_.Tzmoney4).Append("',"); }
-             { sql.Append("odds4 = '").Append(item_.Odds4).Append("',"); }
-             { sql.Append("result4 = '").Append(item_.Result4).Append("',"); }
+            if (item_.Tzmoney4 != null) { sql.Append("tzmoney4 = '").Append(item_.Tzmoney4).Append("',"); }
+            if (item_.Odds4 != null) { sql.Append("odds4 = '").Append(item_.Odds4).Append("',"); }
+            if (item_.Result4 != null) { sql.Append("result4 = '").Append(item_.Result4).Append("',"); }
 
-          { sql.Append("tzmoney5 = '").Append(item_.Tzmoney5).Append("',"); }
-            { sql.Append("odds5 = '").Append(item_.Odds5).Append("',"); }
-           { sql.Append("result5 = '").Append(item_.Result5).Append("',"); }
+            if (item_.Tzmoney5 != null) { sql.Append("tzmoney5 = '").Append(item_.Tzmoney5).Append("',"); }
+            if (item_.Odds5 != null) { sql.Append("odds5 = '").Append(item_.Odds5).Append("',"); }
+            if (item_.Result5 != null) { sql.Append("result5 = '").Append(item_.Result5).Append("',"); }
 
-             { sql.Append("tzmoney6 = '").Append(item_.Tzmoney6).Append("',"); }
-            { sql.Append("odds6 = '").Append(item_.Odds6).Append("',"); }
-            { sql.Append("result6 = '").Append(item_.Result6).Append("',"); }
+            if (item_.Tzmoney6 != null) { sql.Append("tzmoney6 = '").Append(item_.Tzmoney6).Append("',"); }
+            if (item_.Odds6 != null) { sql.Append("odds6 = '").Append(item_.Odds6).Append("',"); }
+            if (item_.Result6 != null) { sql.Append("result6 = '").Append(item_.Result6).Append("',"); }
 
-            { sql.Append("tzmoney7 = '").Append(item_.Tzmoney7).Append("',"); }
-             { sql.Append("odds7 = '").Append(item_.Odds7).Append("',"); }
-             { sql.Append("result7 = '").Append(item_.Result7).Append("',"); }
+            if (item_.Tzmoney7 != null) { sql.Append("tzmoney7 = '").Append(item_.Tzmoney7).Append("',"); }
+            if (item_.Odds7 != null) { sql.Append("odds7 = '").Append(item_.Odds7).Append("',"); }
+            if (item_.Result7 != null) { sql.Append("result7 = '").Append(item_.Result7).Append("',"); }
 
-          { sql.Append("tzmoney8 = '").Append(item_.Tzmoney8).Append("',"); }
-            { sql.Append("odds8 = '").Append(item_.Odds8).Append("',"); }
-            { sql.Append("result8 = '").Append(item_.Result8).Append("',"); }
+            if (item_.Tzmoney8 != null) { sql.Append("tzmoney8 = '").Append(item_.Tzmoney8).Append("',"); }
+            if (item_.Odds8 != null) { sql.Append("odds8 = '").Append(item_.Odds8).Append("',"); }
+            if (item_.Result8 != null) { sql.Append("result8 = '").Append(item_.Result8).Append("',"); }
 
-            { sql.Append("tzmoney9 = '").Append(item_.Tzmoney9).Append("',"); }
-            { sql.Append("odds9 = '").Append(item_.Odds9).Append("',"); }
-             { sql.Append("result9 = '").Append(item_.Result9).Append("',"); }
+            if (item_.Tzmoney9 != null) { sql.Append("tzmoney9 = '").Append(item_.Tzmoney9).Append("',"); }
+            if (item_.Odds9 != null) { sql.Append("odds9 = '").Append(item_.Odds9).Append("',"); }
+            if (item_.Result9 != null) { sql.Append("result9 = '").Append(item_.Result9).Append("',"); }
 
-            { sql.Append("tzmoney10 = '").Append(item_.Tzmoney10).Append("',"); }
-            { sql.Append("odds10 = '").Append(item_.Odds10).Append("',"); }
-            { sql.Append("result10 = '").Append(item_.Result10).Append("',"); }
+            if (item_.Tzmoney10 != null) { sql.Append("tzmoney10 = '").Append(item_.Tzmoney10).Append("',"); }
+            if (item_.Odds10 != null) { sql.Append("odds10 = '").Append(item_.Odds10).Append("',"); }
+            if (item_.Result10 != null) { sql.Append("result10 = '").Append(item_.Result10).Append("',"); }
 
-            { sql.Append("tzmoney11 = '").Append(item_.Tzmoney11).Append("',"); }
-            { sql.Append("odds11 = '").Append(item_.Odds11).Append("',"); }
-            { sql.Append("result11 = '").Append(item_.Result11).Append("',"); }
+            if (item_.Tzmoney11 != null) { sql.Append("tzmoney11 = '").Append(item_.Tzmoney11).Append("',"); }
+            if (item_.Odds11 != null) { sql.Append("odds11 = '").Append(item_.Odds11).Append("',"); }
+            if (item_.Result11 != null) { sql.Append("result11 = '").Append(item_.Result11).Append("',"); }
 
-           { sql.Append("withdraw1 = '").Append(item_.Withdraw1).Append("',"); }
+            if (item_.Withdraw1 != null) { sql.Append("withdraw1 = '").Append(item_.Withdraw1).Append("',"); }
 
             //todo::
             sql.Append("wdresult1 = '").Append(item_.Wdresult1).Append("',");
-        { sql.Append("withdraw2 = '").Append(item_.Withdraw2).Append("',"); }
+            if (item_.Withdraw2 != null) { sql.Append("withdraw2 = '").Append(item_.Withdraw2).Append("',"); }
 
-          { sql.Append("nowmoney = '").Append(item_.Nowmoney).Append("',"); }
+            if (item_.Nowmoney != null) { sql.Append("nowmoney = '").Append(item_.Nowmoney).Append("',"); }
 
-          { sql.Append("balance = '").Append(item_.Balance).Append("',"); }
+            if (item_.Balance != null) { sql.Append("balance = '").Append(item_.Balance).Append("',"); }
 
-           { sql.Append("block = '").Append(item_.Block).Append("',"); }
+            if (item_.Block != null) { sql.Append("block = '").Append(item_.Block).Append("',"); }
+            { sql.Append("blockstatus = '").Append(item_.Blockstatus).Append("',"); }
 
-            { sql.Append("status = '").Append(item_.Status).Append("',"); }
+            if (item_.Recall != null) { sql.Append("recall = '").Append(item_.Recall).Append("',"); }
+            { sql.Append("recallstatus = '").Append(item_.Recallstatus).Append("',"); }
 
-           { sql.Append("comment = '").Append(item_.Comment).Append("',"); }
-       
-            sql.Append("date = '").Append(date).Append("',");
+
+
+            if (item_.Comment != null) { sql.Append("comment = '").Append(item_.Comment).Append("',"); }
+
+            if (item_.Date != null) { sql.Append("date = '").Append(date).Append("',"); }
             sql.Append("wdresult2 = '").Append(item_.Wdresult2).Append("';");
 
 
