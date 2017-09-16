@@ -58,6 +58,18 @@
     <Compile Include="ChangePWD.Designer.cs">
       <DependentUpon>ChangePWD.cs</DependentUpon>
     </Compile>
+    <Compile Include="charge.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="charge.Designer.cs">
+      <DependentUpon>charge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="detail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="detail.Designer.cs">
+      <DependentUpon>detail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Encrypt.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -79,6 +91,12 @@
     <Compile Include="user.cs" />
     <EmbeddedResource Include="ChangePWD.resx">
       <DependentUpon>ChangePWD.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="charge.resx">
+      <DependentUpon>charge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="detail.resx">
+      <DependentUpon>detail.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

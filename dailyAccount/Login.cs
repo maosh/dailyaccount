@@ -16,7 +16,7 @@ namespace dailyAccount
         private Form1 MainFrame_ = null;
         private Request req_ = null;
 
-        private string version = "1.0.7";
+        private string version = "1.0.8";
         public Login(Form1 mainFrame)
         {
             MainFrame_ = mainFrame;

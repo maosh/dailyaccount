@@ -114,11 +114,27 @@ namespace dailyAccount
             return update(sql);
         }
 
-        public int updateNumber(string name, int number)
+
+
+        public int updateNumber(int eid, int sent, int apply, int back)
         {
-            string sql = $"insert into  caculator ( name, number) values('{name}','{number}') ON DUPLICATE KEY UPDATE number='{number}'";
+            string sql="";
+            if (sent != 0)
+            {
+                sql = $"insert into  deposit ( eid, sent) values('{eid}','{sent}')";
+            }
+            else if(apply !=0)
+            {
+                sql = $"insert into  deposit ( eid, apply) values('{eid}','{apply}')";
+            }
+            else if (back != 0)
+            {
+                sql = $"insert into  deposit ( eid, back) values('{eid}','{back}')";
+            }
+
             return update(sql);
         }
+
 
         private int delete (int id)
         {
@@ -1433,7 +1449,20 @@ if(item_.Result1 != null) { sql.Append("result1 = '").Append(item_.Result1).Appe
             return update(sql.ToString());
         }
 
+        public int updateNumber(int eid, int number, int back)
+        {
+            string sql;
+            if (number > 0)
+            {
+                sql = $"insert into  deposit ( eid, apply) values('{eid}','{number}')";
+            }
+            else
+            {
+                sql = $"insert into  deposit ( eid, back) values('{eid}','{back}')";
+            }
 
+            return update(sql);
+        }
 
 
 

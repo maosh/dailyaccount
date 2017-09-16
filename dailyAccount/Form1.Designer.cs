@@ -33,6 +33,8 @@
             this.refresh_BTN = new System.Windows.Forms.Button();
             this.dataitemView_ = new System.Windows.Forms.DataGridView();
             this.bottomLayout_ = new System.Windows.Forms.Panel();
+            this.chargetips_ = new System.Windows.Forms.RichTextBox();
+            this.chargeBTN_ = new System.Windows.Forms.Button();
             this.materialOwner_ = new System.Windows.Forms.TextBox();
             this.updateHistoryBTN_ = new System.Windows.Forms.Button();
             this.reportBTN_ = new System.Windows.Forms.Button();
@@ -92,6 +94,8 @@
             // 
             // bottomLayout_
             // 
+            this.bottomLayout_.Controls.Add(this.chargetips_);
+            this.bottomLayout_.Controls.Add(this.chargeBTN_);
             this.bottomLayout_.Controls.Add(this.materialOwner_);
             this.bottomLayout_.Controls.Add(this.updateHistoryBTN_);
             this.bottomLayout_.Controls.Add(this.reportBTN_);
@@ -120,6 +124,24 @@
             this.bottomLayout_.Name = "bottomLayout_";
             this.bottomLayout_.Size = new System.Drawing.Size(1727, 165);
             this.bottomLayout_.TabIndex = 4;
+            // 
+            // chargetips_
+            // 
+            this.chargetips_.Location = new System.Drawing.Point(1488, 78);
+            this.chargetips_.Name = "chargetips_";
+            this.chargetips_.Size = new System.Drawing.Size(236, 75);
+            this.chargetips_.TabIndex = 24;
+            this.chargetips_.Text = "";
+            // 
+            // chargeBTN_
+            // 
+            this.chargeBTN_.Location = new System.Drawing.Point(1407, 122);
+            this.chargeBTN_.Name = "chargeBTN_";
+            this.chargeBTN_.Size = new System.Drawing.Size(75, 23);
+            this.chargeBTN_.TabIndex = 23;
+            this.chargeBTN_.Text = "充值";
+            this.chargeBTN_.UseVisualStyleBackColor = true;
+            this.chargeBTN_.Click += new System.EventHandler(this.chargeBTN__Click);
             // 
             // materialOwner_
             // 
@@ -324,7 +346,7 @@
             // 
             // ss_
             // 
-        //    this.ss_.DataSource = null;
+      //      this.ss_.DataSource = null;
             this.ss_.Enabled = true;
             this.ss_.Location = new System.Drawing.Point(1, 1);
             this.ss_.Name = "ss_";
@@ -382,6 +404,8 @@
         private System.Windows.Forms.DateTimePicker startDate_;
         private System.Windows.Forms.Button updateHistoryBTN_;
         private System.Windows.Forms.TextBox materialOwner_;
+        private System.Windows.Forms.Button chargeBTN_;
+        private System.Windows.Forms.RichTextBox chargetips_;
     }
 }
 

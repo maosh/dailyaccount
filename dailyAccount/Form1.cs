@@ -225,6 +225,7 @@ namespace dailyAccount
                 clearTz_.Visible = false;
                 updateHistoryBTN_.Visible = false;
                 materialOwner_.Visible = false;
+                chargetips_.Visible = false;
 
 
 
@@ -256,10 +257,11 @@ namespace dailyAccount
             {
 
                 dataitemView_.DataSource = dt;
+                chargetips_.Text = chargetips();
 
             }));
 
-
+          
 
 
 
@@ -791,6 +793,17 @@ namespace dailyAccount
                 MessageBox.Show("历史数据查询中，禁止提交");
                 return;
             }
+
+            if (!chargeisOk())
+            {
+                if (MessageBox.Show("充值账目未结算完毕，确定存档？ ，继续保存?", "标题", MessageBoxButtons.YesNoCancel) == DialogResult.No)
+                {
+
+                    return;
+
+                }
+            }
+          
             getArchiveFlag();
             string dateStr = dateTimePicker_.Value.ToShortDateString();
             if (archiveTimes == 0)
@@ -857,6 +870,22 @@ namespace dailyAccount
                 sb.Append("insert into tztitle_history  (id, title, date)  select id, title , '").Append(dateStr).Append("' from tztitle on DUPLICATE key update title = (select title from tztitle where id = 0) ");
                 req_.update(sb.ToString());
                 setArchiveFlag(dateStr, archiveTimes + 1);
+
+                //充值记录
+              //  if (chargeisOk())
+                {
+
+                    StringBuilder sql = new StringBuilder();
+                    sql.Append("replace into deposit_history  select id,eid,apply,sent,chrage,back,comment,time,");
+                        sql.Append(dateStr);
+                    sql.Append(" from deposit;");
+                    req_.update(sql.ToString());
+
+                }
+            //    else
+            //    {
+            //        return;
+            //    }
 
             }
 
@@ -1041,6 +1070,8 @@ namespace dailyAccount
                 }
                 getArchiveFlag();
                 setArchiveFlag(archiveDate, 0);
+
+                req_.update("delete from deposit");
 
             }
             catch (Exception ex)
@@ -2097,5 +2128,94 @@ namespace dailyAccount
 
             return dt;
         }
+
+        private void chargeBTN__Click(object sender, EventArgs e)
+        {
+            chargeBTN_.BackColor = Color.Green;
+            charge ch = new dailyAccount.charge(userClass, userID);
+            ch.Show();
+         }
+
+
+        private Boolean chargeisOk()
+        {
+            StringBuilder  sql = new StringBuilder();
+            sql.Append("select userid id, username 姓名, sum(ifnull(deposit,0)) 充值, apply-ifnull(sent,0) + backok 仍需, sent 已转, back 退回, backok 已确认 , sent +backok -sum(ifnull(deposit,0)) 余留 from dailyaccount right join  (select sum(ifnull(apply,0)) apply, sum(ifnull(sent,0))sent, sum(ifnull(back,0)) back, sum(if(length(comment)>0, back,0))   backok,    userid, `user`.username username from deposit right join user  on  deposit.eid = `user`.userid group BY userid) as tablea on dailyaccount.`user` = tablea.username     GROUP BY userid; ");
+
+         //   sql.Append("select userid id, username 姓名, sum(ifnull(deposit,0)) 充值, ifnull(apply,0)-ifnull(sent,0) + backok 仍需, sent 已转, back 退回, backok 已确认 , sent +backok -sum(deposit) 余留 from dailyaccount right join  (select sum(apply) apply, sum(sent)sent, sum(back) back, sum(if(length(comment)>0, back,0))   backok,    userid, `user`.username username from deposit right join user  on  deposit.eid = `user`.userid group BY userid) as tablea on dailyaccount.`user` = tablea.username   GROUP BY userid;");
+
+            DataTable dt = new DataTable();
+            dt = req_.selectAll(sql.ToString());
+
+            foreach (DataRow req in dt.Rows)
+            {
+               if( int.Parse(req["余留"].ToString())!=0)
+                {
+                    string name = req["姓名"].ToString();
+                    int back = int.Parse(req["余留"].ToString());
+                    if (MessageBox.Show(name + "余留款：" + back, "标题", MessageBoxButtons.YesNoCancel) == DialogResult.No)
+                    {
+                        return false;
+
+                    }
+                }
+            }
+            return true;
+        }
+
+
+        private string chargetips()
+        {
+            StringBuilder sql = new StringBuilder();
+            sql.Append("select userid id, username 姓名, sum(ifnull(deposit,0)) 充值, apply-ifnull(sent,0)  仍需, sent 已转, back 退回, backok 已确认 , sent +backok -sum(ifnull(deposit,0)) 余留 from dailyaccount right join  (select sum(ifnull(apply,0)) apply, sum(ifnull(sent,0))sent, sum(ifnull(back,0)) back, sum(if(length(comment)>0, back,0))   backok,    userid, `user`.username username from deposit right join user  on  deposit.eid = `user`.userid group BY userid) as tablea on dailyaccount.`user` = tablea.username     GROUP BY userid; ");
+
+            //   sql.Append("select userid id, username 姓名, sum(ifnull(deposit,0)) 充值, ifnull(apply,0)-ifnull(sent,0) + backok 仍需, sent 已转, back 退回, backok 已确认 , sent +backok -sum(deposit) 余留 from dailyaccount right join  (select sum(apply) apply, sum(sent)sent, sum(back) back, sum(if(length(comment)>0, back,0))   backok,    userid, `user`.username username from deposit right join user  on  deposit.eid = `user`.userid group BY userid) as tablea on dailyaccount.`user` = tablea.username   GROUP BY userid;");
+
+            DataTable dt = new DataTable();
+            dt = req_.selectAll(sql.ToString());
+
+            int apply = 0, waitconfirm = 0, remain = 0, back = 0, backok = 0;
+            string name;
+            string tips="";
+            
+            foreach (DataRow req in dt.Rows)
+            {
+                int i = 0;
+                apply = int.Parse(req["仍需"].ToString());
+                back = int.Parse(req["退回"].ToString());
+                backok = int.Parse(req["已确认"].ToString());
+                waitconfirm = -(back - backok);
+                remain = int.Parse(req["余留"].ToString());
+                name = req["姓名"].ToString();
+
+                if (apply !=0)
+                {
+                    if (i == 0)
+                    {
+                        tips += name;i++;
+                    }
+                    tips += "仍需" + apply;
+                }
+                if (waitconfirm != 0)
+                {
+                    if (i == 0)
+                    {
+                        tips += name; i++;
+                    }
+                    tips += "退回"+ waitconfirm;
+                }
+                if (remain != 0)
+                {
+                    if (i == 0)
+                    {
+                        tips += name; i++;
+                    }
+                    tips += "余留" + remain;
+                }
+            }
+            return tips;
+        }
+
+
     }
 }
